@@ -1,0 +1,8 @@
+node_modules/
+my_bot_profile/
+.env
+*.log
+*.png
+.DS_Store
+.vscode/
+.idea/
