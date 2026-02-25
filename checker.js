@@ -6,19 +6,15 @@ export async function runCheck(site) {
 
   try {
     console.log(`🔎 Проверка: ${site.name}...`);
-    await page.goto(site.url, { waitUntil: 'domcontentloaded' });
+    await page.goto(site.url, { waitUntil: "domcontentloaded" });
 
     // Вызываем специфичную логику этого сайта
     const result = await site.checkLogic(page);
 
-    if (result.status === 'found') {
-      console.log(`🔥 [${site.name}]: ${result.message}`);
-      await sendNotification(`[${site.name}] ${result.message} (${site.link})`);
-    } else {
-      console.log(`[${site.name}]: ${result.message}`);
+    if (result.status !== "empty") {
       await sendNotification(`[${site.name}] ${result.message} (${site.link})`);
     }
-
+    console.log(`[${site.name}]: ${result.message}`);
   } catch (err) {
     console.error(`❌ Ошибка на сайте [${site.name}]:`, err.message);
   } finally {
