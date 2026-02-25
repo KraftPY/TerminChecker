@@ -13,7 +13,7 @@ export const sites = [
       await page.waitForTimeout(10000);
 
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      const successSignal = "Електронна черга за адресою Кельн";
+      const successSignal = "Електронна черга за адресою";
 
       const content = await page.innerText("body");
       if (content.includes(noSlotsText)) {
@@ -39,7 +39,7 @@ export const sites = [
       await page.waitForTimeout(10000);
 
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      const successSignal = "Електронна черга за адресою Кельн";
+      const successSignal = "Електронна черга за адресою";
 
       const content = await page.innerText("body");
       if (content.includes(noSlotsText)) {
