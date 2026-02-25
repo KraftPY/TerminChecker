@@ -7,21 +7,49 @@ export const sites = [
     checkLogic: async (page) => {
       await page.click('text="Запис онлайн"');
 
-      await page.waitForSelector("select#service", { timeout: 15000 });
-      await page.selectOption("select#service", "4"); // ID для паспорта
-
-      await page.waitForTimeout(10000);
-
+      const errorText = "сервіс тимчасово недоступний";
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      const successSignal = "Електронна черга за адресою";
+      const successSignal = "Верифікація через Дію";
 
-      const content = await page.innerText("body");
-      if (content.includes(noSlotsText)) {
-        return { status: "empty", message: noSlotsText };
-      } else if (content.includes(successSignal)) {
-        return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
-      } else {
-        return { status: "unknown", message: "Неизвестный результат проверки" };
+      try {
+        await Promise.race([
+          page.waitForSelector("select#service", { timeout: 25000 }),
+          page.locator(`text=${errorText}`).waitFor({ timeout: 25000 }),
+        ]);
+
+        // Проверяем, появилась ли ошибка
+        const errorVisible = await page
+          .locator(`text=${errorText}`)
+          .isVisible();
+        if (errorVisible) {
+          return { status: "error", message: errorText };
+        }
+
+        await page.selectOption("select#service", "4"); // ID для паспорта
+
+        await Promise.race([
+          page.locator(`text=${noSlotsText}`).waitFor({ timeout: 30000 }),
+          page.locator(`text=${successSignal}`).waitFor({ timeout: 30000 }),
+        ]);
+
+        // 4. Проверяем результат
+        if (await page.locator(`text=${noSlotsText}`).isVisible()) {
+          return { status: "empty", message: noSlotsText };
+        }
+
+        if (await page.locator(`text=${successSignal}`).isVisible()) {
+          return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
+        }
+
+        return { status: "unknown", message: "Неизвестный результат" };
+      } catch (error) {
+        if (error.name === "TimeoutError") {
+          return { status: "error", message: "Сайт не отвечает (таймаут)" };
+        }
+        return {
+          status: "error",
+          message: `Ошибка проверки: ${error.message}`,
+        };
       }
     },
   },
@@ -33,21 +61,49 @@ export const sites = [
     checkLogic: async (page) => {
       await page.click('text="Запис онлайн"');
 
-      await page.waitForSelector("select#service", { timeout: 15000 });
-      await page.selectOption("select#service", "4"); // ID для паспорта
-
-      await page.waitForTimeout(10000);
-
+      const errorText = "сервіс тимчасово недоступний";
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      const successSignal = "Електронна черга за адресою";
+      const successSignal = "Верифікація через Дію";
 
-      const content = await page.innerText("body");
-      if (content.includes(noSlotsText)) {
-        return { status: "empty", message: noSlotsText };
-      } else if (content.includes(successSignal)) {
-        return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
-      } else {
-        return { status: "unknown", message: "Неизвестный результат проверки" };
+      try {
+        await Promise.race([
+          page.waitForSelector("select#service", { timeout: 25000 }),
+          page.locator(`text=${errorText}`).waitFor({ timeout: 25000 }),
+        ]);
+
+        // Проверяем, появилась ли ошибка
+        const errorVisible = await page
+          .locator(`text=${errorText}`)
+          .isVisible();
+        if (errorVisible) {
+          return { status: "error", message: errorText };
+        }
+
+        await page.selectOption("select#service", "4"); // ID для паспорта
+
+        await Promise.race([
+          page.locator(`text=${noSlotsText}`).waitFor({ timeout: 30000 }),
+          page.locator(`text=${successSignal}`).waitFor({ timeout: 30000 }),
+        ]);
+
+        // 4. Проверяем результат
+        if (await page.locator(`text=${noSlotsText}`).isVisible()) {
+          return { status: "empty", message: noSlotsText };
+        }
+
+        if (await page.locator(`text=${successSignal}`).isVisible()) {
+          return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
+        }
+
+        return { status: "unknown", message: "Неизвестный результат" };
+      } catch (error) {
+        if (error.name === "TimeoutError") {
+          return { status: "error", message: "Сайт не отвечает (таймаут)" };
+        }
+        return {
+          status: "error",
+          message: `Ошибка проверки: ${error.message}`,
+        };
       }
     },
   },
