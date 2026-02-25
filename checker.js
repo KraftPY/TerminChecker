@@ -11,7 +11,7 @@ export async function runCheck(site) {
     // Вызываем специфичную логику этого сайта
     const result = await site.checkLogic(page);
 
-    if (result.status !== "empty") {
+    if (result.status === "found" || result.status === "unknown") {
       await sendNotification(`[${site.name}] ${result.message} (${site.link})`);
     }
     console.log(`[${site.name}]: ${result.message}`);
