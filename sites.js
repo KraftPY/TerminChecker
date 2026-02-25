@@ -6,23 +6,24 @@ export const sites = [
     // Вся специфика сайта теперь живет здесь
     checkLogic: async (page) => {
       await page.click('text="Запис онлайн"');
-      
-      await page.waitForSelector('select#service', { timeout: 15000 });
-      await page.selectOption('select#service', '4'); // ID для паспорта
-      
-      await page.waitForTimeout(3000);
-      
+
+      await page.waitForSelector("select#service", { timeout: 15000 });
+      await page.selectOption("select#service", "4"); // ID для паспорта
+
+      await page.waitForTimeout(10000);
+
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      
-      if (noSlotsText) {
-        return { status: 'found', message: "🔥 ЕСТЬ МЕСТА!" };
+      const successSignal = "Електронна черга за адресою Кельн";
+
+      const content = await page.innerText("body");
+      if (content.includes(noSlotsText)) {
+        return { status: "empty", message: noSlotsText };
+      } else if (content.includes(successSignal)) {
+        return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
       } else {
-        const content = await page.innerText('body');
-        if (content.includes(noSlotsText)) {
-          return { status: 'empty', message: noSlotsText };
-        }
+        return { status: "unknown", message: "Неизвестный результат проверки" };
       }
-    }
+    },
   },
   {
     name: "Мюнхен",
@@ -31,22 +32,23 @@ export const sites = [
     // Вся специфика сайта теперь живет здесь
     checkLogic: async (page) => {
       await page.click('text="Запис онлайн"');
-      
-      await page.waitForSelector('select#service', { timeout: 15000 });
-      await page.selectOption('select#service', '4'); // ID для паспорта
-      
-      await page.waitForTimeout(3000);
-      
+
+      await page.waitForSelector("select#service", { timeout: 15000 });
+      await page.selectOption("select#service", "4"); // ID для паспорта
+
+      await page.waitForTimeout(10000);
+
       const noSlotsText = "Вибачте, на даний момент всі місця зайняті!";
-      
-      if (noSlotsText) {
-        return { status: 'found', message: "🔥 ЕСТЬ МЕСТА!" };
+      const successSignal = "Електронна черга за адресою Кельн";
+
+      const content = await page.innerText("body");
+      if (content.includes(noSlotsText)) {
+        return { status: "empty", message: noSlotsText };
+      } else if (content.includes(successSignal)) {
+        return { status: "found", message: "🔥 ЕСТЬ МЕСТА!" };
       } else {
-        const content = await page.innerText('body');
-        if (content.includes(noSlotsText)) {
-          return { status: 'empty', message: noSlotsText };
-        }
+        return { status: "unknown", message: "Неизвестный результат проверки" };
       }
-    }
-  }
+    },
+  },
 ];
